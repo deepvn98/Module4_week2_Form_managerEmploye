@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:form="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h3>Welcome, Enter The Employee Details</h3>
+<form:form method="POST" action="addEmployee" modelAttribute="employe">
+    <table>
+        <tr>
+            <td><form:label path="id">Employe ID: </form:label></td>
+            <td><form:input path="id"/></td>
+        </tr>
+        <tr>
+            <td><form:label path="name">Employe's name: </form:label></td>
+            <td><form:input path="name"/></td>
+        </tr>
+        <tr>
+            <td><form:label path="phone">Phone: </form:label></td>
+            <td><form:input path="phone"/></td>
+        </tr>
+        <tr>
+            <td><input type="submit" value="Submit"/></td>
+        </tr>
+    </table>
+</form:form>
+
+</body>
+</html>
