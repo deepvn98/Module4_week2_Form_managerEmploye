@@ -1,29 +1,71 @@
 package controller;
 
+
 import model.Employe;
-import org.springframework.context.annotation.Configuration;
+import model.EmployeFileUpload;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+import service.IEmployeService;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 @Controller
-@Configuration
-@RequestMapping("employe/")
 public class EmployeController {
 
-    @RequestMapping(value = "showForm", method = RequestMethod.GET)
-    public String showForm(ModelMap model) {
-        model.addAttribute("employee", new Employe());
-        return "employe/create";
+
+    @Autowired
+    private IEmployeService employeService;
+    @Autowired
+    Environment environment;
+//    @Value("${fileUpload}")
+//    private String fileUpload;
+
+
+    @GetMapping("Show")
+    public ModelAndView showAllEmploye(){
+        ModelAndView modelAndView = new ModelAndView("Lists");
+        List<Employe> employes = employeService.findAll();
+        modelAndView.addObject("E",employes);
+        return modelAndView;
     }
 
-    @RequestMapping(value = "addEmploye", method = RequestMethod.POST)
-    public String submit(@ModelAttribute("employe") Employe employe, ModelMap model) {
-        model.addAttribute("name", employe.getName());
-        model.addAttribute("contactNumber", employe.getPhone());
-        model.addAttribute("id", employe.getId());
-        return "employe/info";
+    @GetMapping("Create")
+    public ModelAndView showFormCreate(){
+        ModelAndView modelAndView = new ModelAndView("create");
+        modelAndView.addObject("employe",new EmployeFileUpload());
+        return modelAndView;
     }
+
+    @PostMapping("Create")
+    public String create(EmployeFileUpload employeFileUpload){
+//   coppy file
+        MultipartFile multipartFile = employeFileUpload.getImg();
+        String nameFile = multipartFile.getOriginalFilename();
+        String localFile = environment.getProperty("fileUpload");
+
+        try {
+            FileCopyUtils.copy(multipartFile.getBytes(),new File(localFile+nameFile));
+//            FileCopyUtils.copy(multipartFile.getBytes(),new File((fileUpload +nameFile)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Employe employe = new Employe();
+        employe.setId((int) (Math.random()*1000));
+        employe.setName(employeFileUpload.getName());
+        employe.setPhone(employeFileUpload.getPhone());
+        employe.setImg(nameFile);
+        employeService.save(employe);
+        return "redirect:Show";
+
+    }
+
 }

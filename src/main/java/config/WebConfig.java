@@ -2,11 +2,13 @@ package config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
@@ -17,12 +19,18 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 import org.thymeleaf.templatemode.TemplateMode;
+import service.EmployeService;
+import service.IEmployeService;
 
 
 @EnableWebMvc
 @Configuration
 @ComponentScan("controller")
+@PropertySource("classpath:fileUpload.properties")
 public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
+//    @Value("${fileUpload}")
+//    private String fileUpload;
+
     private ApplicationContext applicationContext;
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -56,30 +64,41 @@ public class WebConfig extends WebMvcConfigurerAdapter implements ApplicationCon
 
     }
 
+    @Bean
+    public IEmployeService employeService(){
+        return new EmployeService();
+    }
+
+
+
+
+
+
 //Cấu hình file_load
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver resolver(){
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSizePerFile(5500000);
+        resolver.setMaxUploadSizePerFile(5242880);
         return resolver;
     }
+
+//    Khai báo biến môi trường
     @Autowired
     Environment env;
 
 
 
-
-//    Không hiểu
+//Lấy file ra
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-
-        String fileUpload = env.getProperty("file_upload").toString();
-
-        // Image resource.
+//
+        String file = env.getProperty("fileUpload").toString();
         registry.addResourceHandler("/i/**")
-                .addResourceLocations("file:" + fileUpload);
+                .addResourceLocations("file:" + file);
+//        registry.addResourceHandler("/i/**")
+//                .addResourceLocations("file:" + fileUpload);
     }
-
+//
     @Override
     public void configureDefaultServletHandling(
             DefaultServletHandlerConfigurer configurer) {

@@ -3,6 +3,7 @@ package model;
 public class Employe {
     private int id;
     private String name;
+    private String img;
     private String phone;
 
     public Employe() {
@@ -17,6 +18,20 @@ public class Employe {
         this.id = id;
         this.name = name;
         this.phone = phone;
+
+    }
+
+    public Employe(String name, String img, String phone) {
+        this.name = name;
+        this.img = img;
+        this.phone = phone;
+    }
+
+    public Employe(int id, String name, String img, String phone) {
+        this.id = id;
+        this.name = name;
+        this.img = img;
+        this.phone = phone;
     }
 
     public int getId() {
@@ -25,6 +40,14 @@ public class Employe {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
     public String getName() {

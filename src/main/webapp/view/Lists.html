@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách nhân viên</title>
+</head>
+<body>
+<table border="1 solid" width="70%">
+    <tr>
+        <th>Name</th>
+        <th>IMG</th>
+        <th>Phone</th>
+        <th colspan="2">Action</th>
+    </tr>
+    <tr th:each="E,rowStat:${E}">
+        <td th:text="${E.name}"></td>
+<!--        <td th:text="${E.img}"></td>-->
+
+        <td><img th:src="@{'/i/'+${E.img}}" alt="" width="100px" height="100px"></td>
+        <td th:text="${E.phone}"></td>
+    </tr>
+</table>
+
+</body>
+</html>
